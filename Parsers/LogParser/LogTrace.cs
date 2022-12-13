@@ -16,12 +16,7 @@ public class LogTrace
 
     public void PrintTrace()
     {
-
-        Console.Write($"{TraceID} = <");
-
-        foreach (var logEvent in Trace)
-            Console.Write(logEvent.Activity + ", ");
-
-        Console.Write("> \n");
+        var trace_str = String.Join(", ", Trace.Select(x => x.Activity));
+        Console.Write($"{TraceID} = <{trace_str}>");
     }
 }
