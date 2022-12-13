@@ -1,55 +1,54 @@
 namespace DcrConformanceChecker.ConformanceChecker;
 
-class Activity
+public class Activity
 {
     // Data
-    public string label;
+    public string Label;
 
     // Marking
-    public bool included;
-    public bool executed;
-    public bool pending;
+    public bool Included;
+    public bool Executed;
+    public bool Pending;
 
     // Relations
-    public HashSet<Activity> conditionIn;
-    public HashSet<Activity> milestoneIn;
-    public HashSet<Activity> responseOut;
-    public HashSet<Activity> excludeOut;
-    public HashSet<Activity> includeOut;
-
+    public readonly HashSet<Activity> ConditionIn;
+    public readonly HashSet<Activity> MilestoneIn;
+    public readonly HashSet<Activity> ResponseOut;
+    public readonly HashSet<Activity> ExcludeOut;
+    public readonly HashSet<Activity> IncludeOut;
+    
     public Activity(string label, bool included = true, bool executed = false, bool pending = false)
     {
-        this.label = label;
-        this.included = included;
-        this.executed = executed;
-        this.pending = pending;
-        conditionIn = new HashSet<Activity>();
-        milestoneIn = new HashSet<Activity>();
-        responseOut = new HashSet<Activity>();
-        excludeOut = new HashSet<Activity>();
-        includeOut = new HashSet<Activity>();
+        this.Label = label;
+        this.Included = included;
+        this.Executed = executed;
+        this.Pending = pending;
+
+        ConditionIn = new();
+        MilestoneIn = new();
+        ResponseOut = new();
+        ExcludeOut = new();
+        IncludeOut = new();
     }
 
     public bool isEnabled()
     {
         // Check if activity is included
-        if (!included)
-        {
+        if (!Included) 
             return false;
-        }
 
         // Check if all included conditions have been executed
-        foreach (Activity activity in conditionIn)
+        foreach (Activity activity in ConditionIn)
         {
-            if (activity.included && !activity.executed)
-                Console.WriteLine(activity.label);
+            if (activity.Included && !activity.Executed)
+                Console.WriteLine(activity.Label);
             return false;
         }
 
         // Check if all included milestone has a pending response
-        foreach (Activity activity in milestoneIn)
+        foreach (Activity activity in MilestoneIn)
         {
-            if (activity.included && activity.pending)
+            if (activity.Included && activity.Pending)
                 return false;
         }
 
@@ -63,42 +62,44 @@ class Activity
             return;
 
         // Update marking
-        executed = true;
-        pending = false;
+        Executed = true;
+        Pending = false;
 
         // Set reponses to pending
-        foreach (Activity activity in responseOut)
+        foreach (Activity activity in ResponseOut)
         {
-            activity.pending = true;
+            activity.Pending = true;
         }
 
         // Exclude Activitys
-        foreach (Activity activity in excludeOut)
+        foreach (Activity activity in ExcludeOut)
         {
-            activity.included = false;
+            activity.Included = false;
         }
 
         // Include Activitys
-        foreach (Activity activity in includeOut)
+        foreach (Activity activity in IncludeOut)
         {
-            activity.included = true;
+            activity.Included = true;
         }
 
     }
 
     public bool IsAccepting()
     {
-        return !included || !pending;
+        return !Included || !Pending;
     }
 
     public override string ToString()
     {
-        return $"name: {label}, included: {included}, executed: {executed}, pending: {pending}";
+        return $"name: {Label}, included: {Included}, executed: {Executed}, pending: {Pending}";
     }
 
+    // Activitys are considered equal if they have the same label
+    // This ensures that the HashSet<Activity> Activities in DCRGraph.cs works as intended
     public override int GetHashCode()
     {
-        return label.GetHashCode();
+        return Label.GetHashCode();
     }
 
 }

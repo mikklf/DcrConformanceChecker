@@ -1,6 +1,8 @@
+using DcrConformanceChecker.Parsers.DcrParser;
+
 namespace DcrConformanceChecker.ConformanceChecker;
 
-class DCRGraph
+public class DCRGraph
 {
     public HashSet<Activity> Activities;
 
@@ -11,25 +13,35 @@ class DCRGraph
 
     public bool HasActivity(string label)
     {
-        return Activities.Any(a => a.label == label);
+        return Activities.Any(a => a.Label == label);
     }
 
     public Activity GetActivity(string label)
     {
-        return Activities.Where(a => a.label == label).First();
+        return Activities.Where(a => a.Label == label).First();
     }
 
-    public void AddActivity(string label, bool included = true, bool executed = false, bool pending = false)
+    public void AddActivity(string label, bool executed = false, bool included = true, bool pending = false)
     {
         if (!HasActivity(label))
         {
             var activity = new Activity(label, included, executed, pending);
             Activities.Add(activity);
         }
+        else
+        {
+            var activity = GetActivity(label);
+            activity.Included = included;
+            activity.Executed = executed;
+            activity.Pending = pending;
+        }
     }
 
-    // src -->* trg
-    public void addCondition(string src, string trg)
+    /// <summary>
+    /// Add a condition relation from src to trg and add the activities if they are not already added <br/>
+    /// Notation: src -->* trg
+    /// </summary>
+    public void AddCondition(string src, string trg)
     {
         if (!HasActivity(src))
             AddActivity(src);
@@ -41,11 +53,14 @@ class DCRGraph
 
         Activity trgActivity = GetActivity(trg);
 
-        trgActivity.conditionIn.Add(srcActivity);
+        trgActivity.ConditionIn.Add(srcActivity);
     }
 
-    // src --><> trg
-    public void addMilestone(string src, string trg)
+    /// <summary>
+    /// Add a milestone relation from src to trg and add the activities if they are not already added <br/>
+    /// Notation: src --><> trg
+    /// </summary>
+    public void AddMilestone(string src, string trg)
     {
         if (!HasActivity(src))
             AddActivity(src);
@@ -57,11 +72,14 @@ class DCRGraph
 
         Activity trgActivity = GetActivity(trg);
 
-        trgActivity.milestoneIn.Add(srcActivity);
+        trgActivity.MilestoneIn.Add(srcActivity);
     }
 
-    // src *--> trg
-    public void addResponse(string src, string trg)
+    /// <summary>
+    /// Add a response relation from src to trg and add the activities if they are not already added <br/>
+    /// Notation: src *--> trg
+    /// </summary>
+    public void AddResponse(string src, string trg)
     {
         if (!HasActivity(src))
             AddActivity(src);
@@ -73,11 +91,14 @@ class DCRGraph
 
         Activity trgActivity = GetActivity(trg);
 
-        srcActivity.responseOut.Add(trgActivity);
+        srcActivity.ResponseOut.Add(trgActivity);
     }
 
-    // src -->+ trg
-    public void addInclude(string src, string trg)
+    /// <summary>
+    /// Add an include relation from src to trg and add the activities if they are not already added <br/>
+    /// Notation: src -->+ trg
+    /// </summary>
+    public void AddInclude(string src, string trg)
     {
         if (!HasActivity(src))
             AddActivity(src);
@@ -89,11 +110,14 @@ class DCRGraph
 
         Activity trgActivity = GetActivity(trg);
 
-        srcActivity.includeOut.Add(trgActivity);
+        srcActivity.IncludeOut.Add(trgActivity);
     }
 
-    // src -->% trg
-    public void addExclude(string src, string trg)
+    /// <summary>
+    /// Add an exclude relation from src to trg and add the activities if they are not already added <br/>
+    /// Notation: src -->% trg
+    /// </summary>
+    public void AddExclude(string src, string trg)
     {
         if (!HasActivity(src))
             AddActivity(src);
@@ -105,7 +129,7 @@ class DCRGraph
 
         Activity trgActivity = GetActivity(trg);
 
-        srcActivity.excludeOut.Add(trgActivity);
+        srcActivity.ExcludeOut.Add(trgActivity);
     }
 
     public bool IsAccepting()
