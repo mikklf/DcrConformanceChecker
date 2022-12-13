@@ -1,18 +1,27 @@
 ﻿using DcrConformanceChecker.ConformanceChecker;
 using DcrConformanceChecker.Parsers.DcrParser;
+using DcrConformanceChecker.Parsers.LogParser;
+
+// var a = LogParser.ParseFile(@"C:\Users\mikke\Downloads\log.csv");
+
+// var fr = a.First();
+
+// fr.PrintTrace();
 
 
-var lines = new List<string>();
-lines.Add("A(0,0,0)");
-lines.Add("B(0,1,1)");
-lines.Add("A -->* B");
-lines.Add("B *--> A");
-lines.Add("C -->% A");
-lines.Add("D -->+ A");
-lines.Add("D -->* B");
-lines.Add("A --><> (B, D)");
 
-var graph = DcrPaser.ParseGraph(lines);
+var lines = """
+A(0,0,0)
+B(0,1,1)
+A -->* B
+B *--> A
+C -->% A
+D -->+ A
+D -->* B
+A --><> (B, D)
+""";
+
+var graph = DcrPaser.ParseText(lines);
 
 Console.WriteLine(graph.Activities.Count());
 

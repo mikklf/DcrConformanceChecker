@@ -86,11 +86,12 @@ public class DcrPaser
     static DcrParseNode ParseInput(string input) => ParseDcr.Parse(input);
 
     /// <summary>
-    /// Parse a enumerable list of strings into a DCR graph
+    /// Parse the provided text into a DCR graph
     /// </summary>
-    public static DCRGraph ParseGraph(IEnumerable<string> lines)
+    public static DCRGraph ParseText(string text)
     {
         var graph = new DCRGraph();
+        var lines = text.Split(Environment.NewLine);
 
         foreach (var line in lines)
             DcrPaser.ParseInput(line).Eval(graph);
@@ -101,10 +102,9 @@ public class DcrPaser
     /// <summary>
     /// Parse a text file into a DCR graph
     /// </summary>
-    public static DCRGraph ParseGraphFromFile(string path)
+    public static DCRGraph ParseFile(string path)
     {
-        var lines = File.ReadAllLines(path);
-        return ParseGraph(lines);
+        return ParseText(File.ReadAllText(path));
     }
 
 
