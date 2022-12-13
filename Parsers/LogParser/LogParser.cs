@@ -1,18 +1,21 @@
-namespace DcrConformanceChecker.LogParser;
+namespace DcrConformanceChecker.Parsers.LogParser;
 
 public class LogParser
 {
 
-    private static string[] ReadFile(string path) {
+    private static string[] ReadFile(string path)
+    {
         return File.ReadAllLines(path);
     }
 
-    public static List<LogTrace> Parse(string path) {
+    public static List<LogTrace> Parse(string path)
+    {
         var lines = ReadFile(path).Skip(1);
 
         var data = new List<LogEvent>();
 
-        foreach (var line in lines) {
+        foreach (var line in lines)
+        {
             var values = line.Split(';');
             var logEvent = new LogEvent(values[0], values[2], values[4]);
             data.Add(logEvent);

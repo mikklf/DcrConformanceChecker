@@ -1,6 +1,7 @@
-namespace DcrConformanceChecker.LogParser;
+namespace DcrConformanceChecker.Parsers.LogParser;
 
-public class LogTrace {
+public class LogTrace
+{
 
     public readonly List<LogEvent> Trace;
     public string TraceID => Trace.First().TraceId;
@@ -13,13 +14,14 @@ public class LogTrace {
         Trace = Trace.OrderBy(x => x.Timestamp).ToList();
     }
 
-    public void PrintTrace() {
+    public void PrintTrace()
+    {
 
         Console.Write($"{TraceID} = <");
 
-        foreach (var logEvent in Trace) 
+        foreach (var logEvent in Trace)
             Console.Write(logEvent.Activity + ", ");
-        
-        Console.Write(">");
+
+        Console.Write("> \n");
     }
 }

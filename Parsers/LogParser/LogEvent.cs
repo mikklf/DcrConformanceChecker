@@ -1,7 +1,8 @@
-namespace DcrConformanceChecker.LogParser;
+namespace DcrConformanceChecker.Parsers.LogParser;
 
-public class LogEvent {
-    
+public class LogEvent
+{
+
     public readonly string TraceId;
     public readonly string Activity;
     public readonly DateTime Timestamp;
