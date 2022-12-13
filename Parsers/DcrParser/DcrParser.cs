@@ -98,5 +98,14 @@ public class DcrPaser
         return graph;
     }
 
+    /// <summary>
+    /// Parse a text file into a DCR graph
+    /// </summary>
+    public static DCRGraph ParseGraphFromFile(string path)
+    {
+        var lines = File.ReadAllLines(path);
+        return ParseGraph(lines);
+    }
+
 
 }
