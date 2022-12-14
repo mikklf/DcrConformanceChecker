@@ -6,10 +6,9 @@ namespace DcrConformanceChecker.Parsers.DcrRegexParser;
 
 public class DcrRegexPaser
 {
-
-    Regex regexArrow = new Regex(@"(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+)");
-    Regex regexMarking = new Regex(@"[a-zA-Z0-9 ]+\((1|0), *(1|0), *(1|0)\)|[a-zA-Z0-9 ]+\(\)");
-
+    // https://regex101.com/r/uDOcHo/1
+    Regex regex = new Regex(@"(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+)|(([a-zA-Z0-9 ]+)\((1|0), *(1|0), *(1|0)\)|([a-zA-Z0-9 ]+)\(\))");
+    
     private static string[] ReadFile(string path)
     {
         return File.ReadAllLines(path);
@@ -17,13 +16,11 @@ public class DcrRegexPaser
 
     public void ParseLine(string line, DCRGraph graph)
     {
-        MatchCollection matchesArrow = regexArrow.Matches(line);
-        MatchCollection matchesMarking = regexMarking.Matches(line);
+        MatchCollection matches = regex.Matches(line);
 
-        if (matchesArrow.Count != 0)
-        {
-            foreach (Match match in matchesArrow)
-            {
+        foreach (Match match in matches)
+        {   
+            if (match.Groups[1].Length != 0 && match.Groups[3].Length != 0 && match.Groups[4].Length != 0 ){
                 string left = match.Groups[1].Value;
                 string arrow = match.Groups[3].Value;
                 string right = match.Groups[4].Value;
@@ -38,10 +35,9 @@ public class DcrRegexPaser
                     trg[i] = trg[i].Trim();
                 }
 
-                foreach (var from in src)
+                foreach (var to in trg)
                 {
-                    foreach (var to in trg)
-                    {
+                    foreach(var from in src) {
                         switch (arrow)
                         {
                             case "-->*":
@@ -62,32 +58,29 @@ public class DcrRegexPaser
                         }
                     }
                 }
-            }
-        }
-        else if (matchesMarking.Count != 0)
-        {
-            string name = matchesMarking[0].Groups[0].Value.Split("(")[0];
-            string executed = matchesMarking[0].Groups[1].Value;
-            string included = matchesMarking[0].Groups[2].Value;
-            string pending = matchesMarking[0].Groups[3].Value;
-
-            if (executed.Length == 0 && included.Length == 0 && pending.Length == 0)
-            {
-                graph.AddActivity(name);
-            }
-            else
-            {
-
-                graph.AddActivity(name, Convert.ToBoolean(Convert.ToInt32(executed)), Convert.ToBoolean(Convert.ToInt32(included)), Convert.ToBoolean(Convert.ToInt32(pending)));
+            } else if (match.Groups[6].Length != 0) {
+                string name = match.Groups[6].Value.Split('(')[0].Trim();
+                string executed = match.Groups[7].Value.Trim();
+                string included = match.Groups[8].Value.Trim();
+                string pending = match.Groups[9].Value.Trim();
+                
+                if (executed.Length == 0 || included.Length == 0 || pending.Length == 0)
+                {
+                    graph.AddActivity(name);
+                }
+                else
+                {
+                    graph.AddActivity(name, Convert.ToBoolean(Convert.ToInt32(executed)), Convert.ToBoolean(Convert.ToInt32(included)), Convert.ToBoolean(Convert.ToInt32(pending)));
+                }
             }
         }
     }
 }
 // match all
-// (\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+)
+// (\((([a-zA-Z0-9 ]+), *)*([a-zA-Z0-9 ]+)\)|[a-zA-Z0-9 ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\((([a-zA-Z0-9 ]+), *)*([a-zA-Z0-9 ]+)\)|[a-zA-Z0-9 ]+)|(([a-zA-Z0-9 ]+)\((1|0), *(1|0), *(1|0)\)|([a-zA-Z0-9 ]+)\(\))
 
 // A -->* B
-// [a-zA-Z0-9 ]+ -->\* [a-zA-Z]+
+// [a-zA-Z0-9 ]+ -->\* [a-zA-Z0-9 ]+
 
 
 // (A, B, C) -->* D
