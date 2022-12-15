@@ -31,7 +31,7 @@ public class Activity
         IncludeOut = new();
     }
 
-    public bool isEnabled()
+    public bool IsEnabled()
     {
         // Check if activity is included
         if (!Included) 
@@ -41,8 +41,7 @@ public class Activity
         foreach (Activity activity in ConditionIn)
         {
             if (activity.Included && !activity.Executed)
-                Console.WriteLine(activity.Label);
-            return false;
+                return false;
         }
 
         // Check if all included milestone has a pending response
@@ -58,7 +57,7 @@ public class Activity
     public void Execute()
     {
         // Check if the event is enabled
-        if (!isEnabled())
+        if (!IsEnabled())
             return;
 
         // Update marking
