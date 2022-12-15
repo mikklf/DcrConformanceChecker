@@ -57,8 +57,10 @@ public class Activity
     public void Execute()
     {
         // Check if the event is enabled
-        if (!IsEnabled())
+        if (!IsEnabled()) {
+            System.Console.WriteLine($"Event {Label} is not enabled");
             return;
+        }
 
         // Update marking
         Executed = true;
