@@ -54,19 +54,19 @@ public class DcrPaser
     // Pattern: (1,1,1) or (0,0,0) or (1,0,0) or (0,1,0) or (0,0,1)
     static readonly Parser<(bool, bool, bool)> Marking =
         from lpar in Parse.Char('(').Once().Token()
-        from first in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from executed in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from spacer in Parse.Char(',').Once().Token()
-        from second in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from included in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from spacer2 in Parse.Char(',').Once().Token()
-        from third in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from pending in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from rpar in Parse.Char(')').Once().Token()
-        select (first, second, third);
+        select (executed, included, pending);
 
     // Parser for an empty marking
     // Pattern: ()
     static readonly Parser<(bool, bool, bool)> EmptyMarking =
         from pars in Parse.String("()").Once().Token()
-        select (true, false, false);
+        select (false, true, false);
 
     // Parser for an activity
     // Pattern: Name(Marking)

@@ -25,14 +25,14 @@ public class DCRGraph
     {
         if (!HasActivity(label))
         {
-            var activity = new Activity(label, included, executed, pending);
+            var activity = new Activity(label, executed, included, pending);
             Activities.Add(activity);
         }
         else
         {
             var activity = GetActivity(label);
-            activity.Included = included;
             activity.Executed = executed;
+            activity.Included = included;
             activity.Pending = pending;
         }
     }

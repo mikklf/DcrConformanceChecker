@@ -6,8 +6,8 @@ public class Activity
     public string Label;
 
     // Marking
-    public bool Included;
     public bool Executed;
+    public bool Included;
     public bool Pending;
 
     // Relations
@@ -17,11 +17,11 @@ public class Activity
     public readonly HashSet<Activity> ExcludeOut;
     public readonly HashSet<Activity> IncludeOut;
     
-    public Activity(string label, bool included = true, bool executed = false, bool pending = false)
+    public Activity(string label, bool executed = false, bool included = true, bool pending = false)
     {
         this.Label = label;
-        this.Included = included;
         this.Executed = executed;
+        this.Included = included;
         this.Pending = pending;
 
         ConditionIn = new();
@@ -91,7 +91,7 @@ public class Activity
 
     public override string ToString()
     {
-        return $"name: {Label}, included: {Included}, executed: {Executed}, pending: {Pending}";
+        return $"name: {Label}, executed: {Executed}, included: {Included}, pending: {Pending}";
     }
 
     // Activitys are considered equal if they have the same label
