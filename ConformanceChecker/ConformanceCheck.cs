@@ -1,5 +1,6 @@
-using DcrConformanceChecker.ConformanceChecker;
 using DcrConformanceChecker.Parsers.LogParser;
+
+namespace DcrConformanceChecker.ConformanceChecker;
 
 public class ConformanceCheck {
 
