@@ -52,7 +52,7 @@ var total = traces.Count;
 
 foreach (var trace in traces)
 {
-    var graph = DcrPaser.ParseText(lines2);
+    var graph = DcrParser.ParseText(lines2);
 
     var checker = new ConformanceCheck(graph, trace);
 
