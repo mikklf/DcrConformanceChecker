@@ -21,7 +21,7 @@ D -->* B
 A --><> (B, D)
 """;
 
-var graph = DcrPaser.ParseText(lines);
+var graph = DcrParser.ParseText(lines);
 
 Console.WriteLine(graph.Activities.Count());
 

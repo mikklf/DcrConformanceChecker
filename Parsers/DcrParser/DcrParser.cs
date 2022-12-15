@@ -3,7 +3,7 @@ using Sprache;
 
 namespace DcrConformanceChecker.Parsers.DcrParser;
 
-public class DcrPaser
+public static class DcrParser
 {
     // Parser for a single name
     // Pattern: a-ZA-Z0-9_- and whitespace
