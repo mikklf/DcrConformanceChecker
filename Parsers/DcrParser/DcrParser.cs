@@ -6,14 +6,13 @@ namespace DcrConformanceChecker.Parsers.DcrParser;
 public class DcrPaser
 {
     // Parser for a single name
-    // Pattern: a-ZA-Z0-9_ and whitespace
+    // Pattern: a-ZA-Z0-9_- and whitespace
+    // Must start and end with a-ZA-Z0-9 or be a single a-ZA-Z0-9
     static readonly Parser<string> Name =
-        (from first in Parse.LetterOrDigit.Once().Text()
-         from rest in Parse.LetterOrDigit.Or(Parse.Char('_')).Or(Parse.WhiteSpace).Many().Text()
-         select (first + rest).Trim()).Token();
+        Parse.Regex(@"[a-zA-Z0-9][a-zA-Z0-9_\- ]*[a-zA-Z0-9]|[a-zA-Z0-9]").Token();
 
     // Parser for multiple names
-    // Pattern: (a-ZA-Z0-9_ and whitespace, ...)
+    // Pattern: (Name,Name,Name,...)
     static readonly Parser<IEnumerable<string>> Names =
         from lpar in Parse.Char('(').Once().Token()
         from first in Name.Once()
@@ -22,9 +21,9 @@ public class DcrPaser
         select first.Concat(subs);
 
     // Parser for a single or multiple names
-    // Pattern: a-ZA-Z0-9_ and whitespace or (a-ZA-Z0-9_ and whitespace, ...)
+    // Pattern: Name or (Name,Name,Name,...)
     static readonly Parser<IEnumerable<string>> Activities =
-        // Projicerer Name fra string til IEnumerable<string>
+        // Projects Name from string to IEnumerable<string>
         Name.Select(n => new string[] { n }).Or(Names);
 
 
@@ -43,7 +42,7 @@ public class DcrPaser
     }
 
     // Parser for a relations between one or more activities
-    // Pattern: Activities -->* Activities
+    // Pattern: Activities Operator Activities
     static readonly Parser<DcrParseNode> Relation =
         from first in Activities
         from op in Response.Or(Milestone).Or(Condition).Or(Include).Or(Exclude)
