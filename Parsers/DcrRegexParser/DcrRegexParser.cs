@@ -9,9 +9,12 @@ public class DcrRegexPaser
     // https://regex101.com/r/uDOcHo/1
     Regex regex = new Regex(@"(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\(([a-zA-Z0-9 ]+, *)*[a-zA-Z0-9 ]+\)|[a-zA-Z0-9 ]+)|(([a-zA-Z0-9 ]+)\((1|0), *(1|0), *(1|0)\)|([a-zA-Z0-9 ]+)\(\))");
     
-    private static string[] ReadFile(string path)
+    public void ReadFile(string path, DCRGraph graph)
     {
-        return File.ReadAllLines(path);
+        var text = File.ReadAllLines(path);
+        foreach (string line in text){
+            ParseLine(line, graph);
+        }
     }
 
     public void ParseLine(string line, DCRGraph graph)
