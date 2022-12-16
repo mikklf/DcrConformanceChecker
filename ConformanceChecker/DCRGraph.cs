@@ -4,6 +4,7 @@ namespace DcrConformanceChecker.ConformanceChecker;
 
 public class DCRGraph
 {
+    // All activities in the graph
     public HashSet<Activity> Activities;
 
     public DCRGraph()
@@ -11,16 +12,34 @@ public class DCRGraph
         Activities = new HashSet<Activity>();
     }
 
+    /// <summary>
+    /// Get all activities that are pending
+    /// </summary>
+    public List<Activity> GetPendingActivities()
+    {
+        return Activities.Where(a => a.Pending).ToList();
+    }
+
+    /// <summary>
+    /// Checks if the activity with the given label is exists
+    /// </summary>
     public bool HasActivity(string label)
     {
         return Activities.Any(a => a.Label == label);
     }
 
+    /// <summary>
+    /// Returns the activity with the given label. Throws an exception if the activity does not exist
+    /// </summary>
     public Activity GetActivity(string label)
     {
         return Activities.Where(a => a.Label == label).First();
     }
 
+    /// <summary>
+    /// Adds Activity to DCR graph. <br/>
+    /// If the activity already exists, it will update the marking.
+    /// </summary>
     public void AddActivity(string label, bool executed = false, bool included = true, bool pending = false)
     {
         if (!HasActivity(label))
@@ -132,6 +151,9 @@ public class DCRGraph
         srcActivity.ExcludeOut.Add(trgActivity);
     }
 
+    /// <summary>
+    /// Returns true if the graph is accepting, false otherwise
+    /// </summary>
     public bool IsAccepting()
     {
         foreach (Activity activity in Activities)

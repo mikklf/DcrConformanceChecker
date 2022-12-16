@@ -2,8 +2,6 @@
 using DcrConformanceChecker.Parsers.DcrParser;
 using DcrConformanceChecker.Parsers.LogParser;
 
-var traces = LogParser.ParseFile(@"C:\Users\mikke\Desktop\DcrConformanceChecker\log.csv");
-
 var lines = """
 Approve changed account(0,0,0)
 Reject *--> (Change phase to Abort, Applicant informed)
@@ -47,76 +45,16 @@ Fill out application -->* Execute abandon
 Fill out application -->* Change phase to Abandon
 """;
 
-var accepting = 0;
-var total = traces.Count;
+var traces = LogParser.ParseFile(@"C:\Users\mikke\Desktop\DcrConformanceChecker\log.csv");
 
-foreach (var trace in traces)
+var result = new ConformanceChecker(lines, traces).RunConformanceCheck();
+foreach (var traceResult in result.UnsatisfiedTraces)
 {
-    var graph = DcrParser.ParseText(lines2);
-
-    var checker = new ConformanceCheck(graph, trace);
-
-    checker.RunCheck();
-
-    if (checker.IsAccepting())
-    {
-        accepting++;
-    } else {
-        trace.PrintTrace();
-    }
+    System.Console.WriteLine();
+    System.Console.WriteLine($"Trace Id: {traceResult.Trace.TraceId} is not satisfied: {traceResult.Message}");
+    traceResult.Trace.PrintTrace();
+    System.Console.WriteLine();
 }
 
-Console.WriteLine($"Accepting: {accepting} / {total}");
-
-
-
-
-
-
-
-// Regex regexArrow = new Regex(@"(\(([a-zA-Z ]+, *)*[a-zA-Z ]+\)|[a-zA-Z ]+) *(-->\*|--><>|\*-->|-->%|-->\+) *(\(([a-zA-Z ]+, *)*[a-zA-Z ]+\)|[a-zA-Z ]+)");
-
-// string input = "Fill out app -->* (B, C, D)";
-
-// MatchCollection matches = regexArrow.Matches(input);
-
-// Console.WriteLine("{0} matches found in: {1}", matches.Count, input);
-
-// Console.WriteLine(matches[0].Groups[3].Value);
-
-// foreach (Match match in matches)
-// {
-//     // Get the left-hand side and right-hand side of the arrow
-//     string left = match.Groups[1].Value;
-//     string arrow = match.Groups[3].Value;
-//     string right = match.Groups[4].Value;
-//     Console.WriteLine($"Left: {left}, Arrow: {arrow}, Right: {right}");
-//     var test = left.Replace("(", "").Replace(")", "").Split(',');
-//     var test2 = right.Replace("(", "").Replace(")", "").Split(',');
-//     for (int i = 0; i < test.Length; i++) 
-//     {
-//         test[i] = test[i].Trim();
-//     }
-//     for (int i = 0; i < test2.Length; i++) 
-//     {
-//         test2[i] = test2[i].Trim();
-//     }
-//     Console.WriteLine(test[0]);
-//     Console.WriteLine($"{test2[0]} {test2[1]} {test2[2]}");
-// }
-
-// // Fill out app (1,0,0)
-
-// Regex regexMarking = new Regex(@"[a-zA-Z ]+\((1|0), *(1|0), *(1|0)\)|[a-zA-Z ]+\(\)");
-
-// string input2 = "Fill out app(1, 0, 0)";
-
-// MatchCollection matchesMarking = regexMarking.Matches(input2);
-
-// Console.WriteLine("{0} matches found in: {1}", matchesMarking.Count, input2);
-
-// Console.WriteLine($"{matchesMarking[0].Groups[0].Value.Split("(")[0]}");
-// Console.WriteLine($"{matchesMarking[0].Groups[1].Value.Length}");
-// Console.WriteLine($"{matchesMarking[0].Groups[2].Value.Length}");
-// Console.WriteLine($"{matchesMarking[0].Groups[3].Value.Length}");
-// Console.WriteLine($"{Convert.ToBoolean(Convert.ToInt32("1"))}");
+Console.WriteLine($"Satisfied: {result.SatisfiedTraces.Count} / {result.TotalTraceCount}");
+Console.WriteLine($"Unsatisfied: {result.UnsatisfiedTraces.Count} / {result.TotalTraceCount}");
