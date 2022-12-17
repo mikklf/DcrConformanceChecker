@@ -1,6 +1,6 @@
 ﻿using DcrConformanceChecker.ConformanceChecker;
-using DcrConformanceChecker.Parsers.DcrParser;
-using DcrConformanceChecker.Parsers.LogParser; 
+using DcrConformanceChecker.Parsers.LogParser;
+using DcrConformanceChecker.TypoChecker;
 
 if (args.Length != 2) 
 {
@@ -23,7 +23,9 @@ if (!File.Exists(args[1]))
 var textLines = File.ReadAllText(args[0]);
 var traces = LogParser.ParseFile(args[1]);
 
-var result = new ConformanceChecker(textLines, traces).RunConformanceCheck();
+var checker = new ConformanceChecker(textLines, traces);
+var result = checker.RunConformanceCheck();
+
 foreach (var traceResult in result.UnsatisfiedTraces)
 {
     System.Console.WriteLine();
@@ -34,3 +36,5 @@ foreach (var traceResult in result.UnsatisfiedTraces)
 
 Console.WriteLine($"Satisfied: {result.SatisfiedTraces.Count} / {result.TotalTraceCount}");
 Console.WriteLine($"Unsatisfied: {result.UnsatisfiedTraces.Count} / {result.TotalTraceCount}");
+
+TypoChecker.TypoCheck(textLines, traces, 80);
