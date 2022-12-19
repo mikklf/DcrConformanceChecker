@@ -3,17 +3,18 @@ using Sprache;
 
 namespace DcrConformanceChecker.Parsers.DcrParser;
 
-public static class DcrParser
+public class DcrParser
 {
     // Parser for a single name
-    // Pattern: a-ZA-Z0-9_- and whitespace
-    // Must start and end with a-ZA-Z0-9 or be a single a-ZA-Z0-9
-    private static readonly Parser<string> Name =
-        Parse.Regex(@"[a-zA-Z0-9][a-zA-Z0-9_\- ]*[a-zA-Z0-9]|[a-zA-Z0-9]").Token();
+    // Pattern: a-ZA-Z0-9_ and whitespace
+    static readonly Parser<string> Name =
+        (from first in Parse.LetterOrDigit.Once().Text()
+         from rest in Parse.LetterOrDigit.Or(Parse.Char('_')).Or(Parse.WhiteSpace).Many().Text()
+         select (first + rest).Trim()).Token();
 
     // Parser for multiple names
-    // Pattern: (Name,Name,Name,...)
-    private static readonly Parser<IEnumerable<string>> Names =
+    // Pattern: (a-ZA-Z0-9_ and whitespace, ...)
+    static readonly Parser<IEnumerable<string>> Names =
         from lpar in Parse.Char('(').Once().Token()
         from first in Name.Once()
         from subs in Parse.Char(',').Token().Then(_ => Name).Many()
@@ -21,29 +22,29 @@ public static class DcrParser
         select first.Concat(subs);
 
     // Parser for a single or multiple names
-    // Pattern: Name or (Name,Name,Name,...)
-    private static readonly Parser<IEnumerable<string>> Activities =
-        // Projects Name from string to IEnumerable<string>
+    // Pattern: a-ZA-Z0-9_ and whitespace or (a-ZA-Z0-9_ and whitespace, ...)
+    static readonly Parser<IEnumerable<string>> Activities =
+        // Projicerer Name fra string til IEnumerable<string>
         Name.Select(n => new string[] { n }).Or(Names);
 
 
     // Operators
     // Pattern: -->* or --><> or *--> or -->+ or -->%
-    private static readonly Parser<RelationType> Response = Operator("-->*", RelationType.Condition);
-    private static readonly Parser<RelationType> Milestone = Operator("--><>", RelationType.Milestone);
-    private static readonly Parser<RelationType> Condition = Operator("*-->", RelationType.Response);
-    private static readonly Parser<RelationType> Include = Operator("-->+", RelationType.Include);
-    private static readonly Parser<RelationType> Exclude = Operator("-->%", RelationType.Exclude);
+    static readonly Parser<RelationType> Response = Operator("-->*", RelationType.Condition);
+    static readonly Parser<RelationType> Milestone = Operator("--><>", RelationType.Milestone);
+    static readonly Parser<RelationType> Condition = Operator("*-->", RelationType.Response);
+    static readonly Parser<RelationType> Include = Operator("-->+", RelationType.Include);
+    static readonly Parser<RelationType> Exclude = Operator("-->%", RelationType.Exclude);
 
     // Helper function for parsing operators
-    private static Parser<RelationType> Operator(string op, RelationType opType)
+    static Parser<RelationType> Operator(string op, RelationType opType)
     {
         return Parse.String(op).Token().Return(opType);
     }
 
     // Parser for a relations between one or more activities
-    // Pattern: Activities Operator Activities
-    private static readonly Parser<DcrParseNode> Relation =
+    // Pattern: Activities -->* Activities
+    static readonly Parser<DcrParseNode> Relation =
         from first in Activities
         from op in Response.Or(Milestone).Or(Condition).Or(Include).Or(Exclude)
         from rest in Activities
@@ -52,25 +53,25 @@ public static class DcrParser
 
     // Parser for a marking
     // Pattern: (1,1,1) or (0,0,0) or (1,0,0) or (0,1,0) or (0,0,1)
-    private static readonly Parser<(bool, bool, bool)> Marking =
+    static readonly Parser<(bool, bool, bool)> Marking =
         from lpar in Parse.Char('(').Once().Token()
-        from executed in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from first in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from spacer in Parse.Char(',').Once().Token()
-        from included in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from second in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from spacer2 in Parse.Char(',').Once().Token()
-        from pending in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
+        from third in Parse.Char('1').Once().Return(true).Or(Parse.Char('0').Once().Return(false))
         from rpar in Parse.Char(')').Once().Token()
-        select (executed, included, pending);
+        select (first, second, third);
 
     // Parser for an empty marking
     // Pattern: ()
-    private static readonly Parser<(bool, bool, bool)> EmptyMarking =
+    static readonly Parser<(bool, bool, bool)> EmptyMarking =
         from pars in Parse.String("()").Once().Token()
-        select (false, true, false);
+        select (true, false, false);
 
     // Parser for an activity
     // Pattern: Name(Marking)
-    private static readonly Parser<DcrParseNode> Activity =
+    static readonly Parser<DcrParseNode> Activity =
         from name in Name
         from marking in Marking.Or(EmptyMarking)
         select new ActivityNode(name, marking.Item1, marking.Item2, marking.Item3);
@@ -78,11 +79,11 @@ public static class DcrParser
 
     // Parser for a DCR graph
     // Pattern: Activity or Relation
-    private static readonly Parser<DcrParseNode> ParseDcr =
+    static readonly Parser<DcrParseNode> ParseDcr =
         Relation.Or(Activity);
 
     // Parse a string into a ParseNode
-    private static DcrParseNode ParseInput(string input) => ParseDcr.Parse(input);
+    static DcrParseNode ParseInput(string input) => ParseDcr.Parse(input);
 
     /// <summary>
     /// Parse the provided text into a DCR graph

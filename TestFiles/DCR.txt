@@ -1,0 +1,28 @@
+Fill out application -->* Change phase to Review
+Fill out application -->* Architect Review
+Fill out application -->* Review
+Fill out application -->* Lawyer Review
+Fill out application -->* Register Decision
+Fill out application -->* Change phase to Board meeting
+Fill out application -->* Round ends
+Fill out application -->* Round approved
+Fill out application -->* Inform application of board review
+Fill out application -->* Reject
+Fill out application -->* Applicant informed
+Fill out application -->* Change phase to Abort
+Fill out application -->* Screening reject
+Fill out application -->* Screen application
+Fill out application -->* Execute pre-decision
+Fill out application -->* Approve
+Fill out application -->* Change phase to Preparation
+Fill out application -->* Inform applicant of approval
+Fill out application -->* Applicant justifies relevance
+Fill out application -->* Change Phase to Payout
+Fill out application -->* First payment
+Fill out application -->* Payment completed
+Fill out application -->* Change Phase to End Report
+Fill out application -->* Acount number changed
+Fill out application -->* Receive end report
+Fill out application -->* Change phase to Complete
+Fill out application -->* Execute abandon
+Fill out application -->* Change phase to Abandon
