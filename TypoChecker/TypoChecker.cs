@@ -28,7 +28,7 @@ public class TypoChecker{
 
 
     /// <summary>
-    /// Fuzzy matches DCRGraph activities and log activities in order to warn user that a typo in the DCRGraph might have accured.
+    /// Fuzzy matches DCRGraph activities and log activities in order to warn user that a typo in the DCRGraph might have occured.
     /// </summary>
     /// <param name="graphText"></param>
     /// <param name="traces"></param>
@@ -37,6 +37,7 @@ public class TypoChecker{
         var logActivities = getLogActivities(traces);
         var graph = DcrParser.ParseText(graphText);
         var pairs = new List<(String, String)>();
+        
         foreach (Activity graphActiviy in graph.Activities){
             foreach(String logActivity in logActivities ){
                 var ratio = Fuzz.Ratio(graphActiviy.Label, logActivity);
