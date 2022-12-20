@@ -13,8 +13,7 @@ public class TypoChecker{
     /// <param name="traces"></param>
     /// <returns></returns>
     public static HashSet<String> getLogActivities(List<LogTrace> traces){
-        HashSet<String> logActivities = traces.SelectMany(t => t.Events.Select(e => e.Activity)).ToHashSet<String>();
-        return logActivities;
+        return traces.SelectMany(t => t.Events.Select(e => e.Activity)).ToHashSet<String>();
     }
 
     /// <summary>
