@@ -23,6 +23,8 @@ public class TraceTest {
         foreach (var e in trace.Events)
         {
             // If it does not exist in the graph, skip it
+            // Open world assumption: if an event doesn't exist in the graph it must be enabled
+            // and does not have an effect on the state of the graph
             if (graph.HasActivity(e.Activity))
             {
                 var a = graph.GetActivity(e.Activity);
@@ -36,7 +38,7 @@ public class TraceTest {
                 } else {
                     a.Execute();
                 }
-            } 
+            }
         }
 
         // If the graph is accepting after running each event, the trace is satisfied
