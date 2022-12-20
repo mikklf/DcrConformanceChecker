@@ -31,6 +31,9 @@ public class Activity
         IncludeOut = new();
     }
 
+    /// <summary>
+    /// Checks if the activity is enabled
+    /// </summary>
     public bool IsEnabled()
     {
         // Check if activity is included
@@ -54,13 +57,14 @@ public class Activity
         return true;
     }
 
+    /// <summary>
+    /// Executes the activity, if the activity is enabled
+    /// </summary>
     public void Execute()
     {
         // Check if the event is enabled
-        if (!IsEnabled()) {
-            System.Console.WriteLine($"Event {Label} is not enabled");
+        if (!IsEnabled()) 
             return;
-        }
 
         // Update marking
         Executed = true;
@@ -86,6 +90,9 @@ public class Activity
 
     }
 
+    /// <summary>
+    /// Checks if the activity is accepting
+    /// </summary>
     public bool IsAccepting()
     {
         return !Included || !Pending;
