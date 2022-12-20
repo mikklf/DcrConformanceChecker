@@ -1,0 +1,2 @@
+Change Phase to Payout *--> First payment
+First payment --><> Change Phase to End Report

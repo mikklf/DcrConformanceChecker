@@ -1,0 +1,33 @@
+Execute abandon -->% Execute abandon
+Execute abandon *--> Change phase to Abandon
+Execute abandon -->% Fill out application
+Execute abandon -->% Approved - to board
+Execute abandon -->% Change phase to Review
+Execute abandon -->% Architect Review
+Execute abandon -->% Review
+Execute abandon -->% Lawyer Review
+Execute abandon -->% Register Decision
+Execute abandon -->% Change phase to Board meeting
+Execute abandon -->% Round ends
+Execute abandon -->% Round approved
+Execute abandon -->% Inform application of board review
+Execute abandon -->% Reject
+Execute abandon -->% Applicant informed
+Execute abandon -->% Change phase to Abort
+Execute abandon -->% Screening reject
+Execute abandon -->% Screen application
+Execute abandon -->% Execute pre-decision
+Execute abandon -->% Approve
+Execute abandon -->% Change phase to Preparation
+Execute abandon -->% Set to Pre-approved
+Execute abandon -->% Inform applicant of approval
+Execute abandon -->% Applicant justifies relevance
+Execute abandon -->% Change Phase to Payout
+Execute abandon -->% First payment
+Execute abandon -->% Payment completed
+Execute abandon -->% Change Phase to End Report
+Execute abandon -->% Account number changed
+Execute abandon -->% Receive end report
+Execute abandon -->% Change phase to Complete
+Execute abandon -->% Undo payment
+Execute abandon -->% Approve changed account

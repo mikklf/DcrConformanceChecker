@@ -1,0 +1,29 @@
+Lawyer Review(0, 1, 1)
+Architect Review(0, 1, 1)
+Change phase to Abort(0, 0, 0)
+Applicant informed(0, 0, 0)
+First payment(0, 0, 0)
+Undo payment(0, 0, 0)
+Approve changed account(0, 0, 0)
+Fill out application -->* (Lawyer Review, Architect Review, Reject, Change phase to Abort, Applicant informed, Change Phase to Payout, First payment, Undo payment, Account number changed, Approve changed account, Change Phase to End Report)
+Fill out application -->* (Approved - to board, Change phase to Review, Review, Register Decision, Change phase to Board meeting, Round ends, Round approved, Inform application of board review, Screening reject, Screen application, Execute pre-decision, Approve, Change phase to Preparation, Set to Pre-approved, Inform applicant of approval, Applicant justifies relevance, Payment completed, Receive end report, Change phase to Complete)
+Lawyer Review -->% Architect Review
+Architect Review -->% Lawyer Review
+Reject *--> Change phase to Abort
+Reject *--> Applicant informed
+Reject -->+ Change phase to Abort
+Reject -->+ Applicant informed
+Change Phase to Payout -->+ (First payment, Undo payment)
+Change Phase to Payout *--> First payment
+First payment -->% First payment
+Undo payment *--> First payment
+Undo payment -->+ First payment
+(First payment, Undo payment) --><> Change Phase to End Report
+Account number changed *--> Approve changed account
+Account number changed -->+ Approve changed account
+Approve changed account -->% Approve changed account
+Approve changed account --><> (First payment, Undo payment)
+Execute abandon -->% Execute abandon
+Execute abandon *--> Change phase to Abandon
+Execute abandon -->% (Fill out application, Lawyer Review, Architect Review, Reject, Change phase to Abort, Applicant informed, Change Phase to Payout, First payment, Undo payment, Account number changed, Approve changed account, Change Phase to End Report)
+Execute abandon -->% (Approved - to board, Change phase to Review, Review, Register Decision, Change phase to Board meeting, Round ends, Round approved, Inform application of board review, Screening reject, Screen application, Execute pre-decision, Approve, Change phase to Preparation, Set to Pre-approved, Inform applicant of approval, Applicant justifies relevance, Payment completed, Receive end report, Change phase to Complete)

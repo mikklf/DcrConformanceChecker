@@ -1,3 +1,4 @@
+Fill out application -->* Approved - to board
 Fill out application -->* Change phase to Review
 Fill out application -->* Architect Review
 Fill out application -->* Review
@@ -15,14 +16,17 @@ Fill out application -->* Screen application
 Fill out application -->* Execute pre-decision
 Fill out application -->* Approve
 Fill out application -->* Change phase to Preparation
+Fill out application -->* Set to Pre-approved
 Fill out application -->* Inform applicant of approval
 Fill out application -->* Applicant justifies relevance
 Fill out application -->* Change Phase to Payout
 Fill out application -->* First payment
 Fill out application -->* Payment completed
 Fill out application -->* Change Phase to End Report
-Fill out application -->* Acount number changed
+Fill out application -->* Account number changed
 Fill out application -->* Receive end report
 Fill out application -->* Change phase to Complete
 Fill out application -->* Execute abandon
 Fill out application -->* Change phase to Abandon
+Fill out application -->* Undo payment
+Fill out application -->* Approve changed account
