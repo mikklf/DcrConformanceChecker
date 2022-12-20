@@ -12,8 +12,8 @@ public class TypoChecker{
     /// </summary>
     /// <param name="traces"></param>
     /// <returns></returns>
-    public static HashSet<String> getLogActivities(List<LogTrace> traces){
-        return traces.SelectMany(t => t.Events.Select(e => e.Activity)).ToHashSet<String>();
+    public static List<String> getLogActivities(List<LogTrace> traces){
+        return traces.SelectMany(t => t.Events.Select(e => e.Activity)).Distinct().ToList();
     }
 
     /// <summary>
@@ -25,6 +25,23 @@ public class TypoChecker{
         return tuples.Where(p1 => (tuples.Select(p2 => (p2.Item2, p2.Item1))).All(p2 => p2 != p1)).ToList<(String, String)>();
     }
 
+    /// <summary>
+    /// Parses graphtext and converts DCR graph to list of distinct activity labels.
+    /// <param name="graphText"></param>
+    /// <returns></returns>
+    public static List<String> getDCRActivities(string graphText){
+        return DcrParser.ParseText(graphText).Activities.Select(a => a.Label).Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Eliminates Exact Matches between graph list and log list activities from graph list.
+    /// </summary>
+    /// <param name="logActivities"></param>
+    /// <param name="graphActivities"></param>
+    /// <returns></returns>
+    public static List<String> eliminateExactMatch (List<String> logActivities, List<String> graphActivities){
+        return graphActivities.Where(a1 => logActivities.All(a2 => a1 != a2)).ToList();
+    }
 
     /// <summary>
     /// Fuzzy matches DCRGraph activities and log activities in order to warn user that a typo in the DCRGraph might have occured.
@@ -34,14 +51,13 @@ public class TypoChecker{
     /// <param name="threshold"></param>
     public static void TypoCheck(string graphText, List<LogTrace> traces, int threshold){
         var logActivities = getLogActivities(traces);
-        var graph = DcrParser.ParseText(graphText);
+        var graphActivities = eliminateExactMatch(logActivities, getDCRActivities(graphText));
         var pairs = new List<(String, String)>();
-        
-        foreach (Activity graphActiviy in graph.Activities){
+
+        foreach (String graphActiviy in (graphActivities)){
             foreach(String logActivity in logActivities ){
-                var ratio = Fuzz.Ratio(graphActiviy.Label, logActivity);
-                if (ratio > threshold && ratio < 100){
-                    pairs.Add((graphActiviy.Label,logActivity));
+                if (Fuzz.Ratio(graphActiviy, logActivity) > threshold){
+                    pairs.Add((graphActiviy, logActivity));
                 }
             }
         }
