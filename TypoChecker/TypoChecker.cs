@@ -17,15 +17,6 @@ public class TypoChecker{
     }
 
     /// <summary>
-    /// Returns tuples where no reversed pair exist in the list. This works by taking a list of tuples (list1) and then reversing pairs
-    /// in a new list (list2), then picking elements each element in list1 that does not occur in list2. 
-    /// </summary>
-    /// <param name="tuples"></param>
-    public static List<(String, String)> getDistinctTuple(List<(String,String)> tuples){
-        return tuples.Where(p1 => (tuples.Select(p2 => (p2.Item2, p2.Item1))).All(p2 => p2 != p1)).ToList<(String, String)>();
-    }
-
-    /// <summary>
     /// Parses graphtext and converts DCR graph to list of distinct activity labels.
     /// <param name="graphText"></param>
     /// <returns></returns>
@@ -62,7 +53,7 @@ public class TypoChecker{
             }
         }
 
-        foreach ((String,String) pair in getDistinctTuple(pairs)) { 
+        foreach ((String,String) pair in pairs) { 
             Console.WriteLine($"WARNING!: The graph activity <{pair.Item1}> look similar but not identical to log event <{pair.Item2}>. Was this intended?");
         }
     }
